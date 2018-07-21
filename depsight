@@ -6,7 +6,6 @@ import copy
 import sys
 import subprocess
 from collections import OrderedDict
-import glob
 import os
 
 import yaml
