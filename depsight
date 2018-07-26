@@ -10,6 +10,8 @@ import os
 
 import yaml
 
+from lib import depends
+
 
 parser = argparse.ArgumentParser(description='')
 
@@ -117,20 +119,12 @@ while True:
     last_card = card
     add_dependency()
 
-# Return true iff a depends on b,
-# i.e. b is in the dependencies of a
-def depends_on(a, b):
-    if not a in direct_dependencies:
-        return False
-    else:
-        return b in direct_dependencies[a]
-
 def remove_indirect_dependencies():
     for mod in direct_dependencies:
         for one in direct_dependencies[mod]:
             others = direct_dependencies[mod] - set([one])
             for other in others:
-                if depends_on(other, one):
+                if depends.depends_on(other, one, direct_dependencies):
                     direct_dependencies[mod].remove(one)
                     return
                     # Go to next mod
