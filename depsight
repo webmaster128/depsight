@@ -138,13 +138,15 @@ while True:
     last_card = card
     remove_indirect_dependencies()
 
-def openfile(f):
+def openfile(filepath):
     # pylint: disable=no-member
     # os.startfile is available on Windows only
     if sys.platform.startswith('linux'):
-        subprocess.call(["xdg-open", f])
+        subprocess.call(["xdg-open", filepath])
+    elif sys.platform == "darwin":
+        subprocess.call(["open", filepath])
     else:
-        os.startfile(f)
+        os.startfile(filepath)
 
 if args.verbose:
     print("Done resolving dependencies.")
