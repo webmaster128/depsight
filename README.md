@@ -42,7 +42,7 @@ The binary `from_npm` creates a dependencies file from a npm repository, which
 is especially useful to inspect monorepos. The output of `from_npm` can be piped
 directly into `depsight`
 
-## A simple example
+### A simple example
 
 An example usage is
 
