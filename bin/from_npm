@@ -4,6 +4,7 @@ import argparse
 import json
 import glob
 import sys
+import re
 
 parser = argparse.ArgumentParser(description='')
 
@@ -12,9 +13,29 @@ parser.add_argument('directory',
 parser.add_argument('--include-node-modules', action='store_const',
                     const=True, default=False,
                     help='Include the dependencies in the installed /node_modules/ fodlders')
+parser.add_argument('--exclude', dest='exclude_patterns',
+                    action='append',
+                    metavar='PATTERN',
+                    help='Explude patterns')
+parser.add_argument('--verbose', dest='verbose', action='store_const',
+                    const=True, default=False,
+                    help='Verbose output (default: false)')
 args = parser.parse_args()
 
+def debug(thing):
+    print(thing, file=sys.stderr)
+
+exclude_patterns = args.exclude_patterns or []
+if args.verbose:
+    debug("Compiling exclude patterns ...")
+    debug(exclude_patterns)
+excludes = [re.compile(pattern) for pattern in exclude_patterns]
+
 def included(path):
+    for exclude in excludes:
+        if exclude.search(path):
+            return False
+
     if args.include_node_modules:
         return True
     else:
@@ -22,6 +43,8 @@ def included(path):
 
 for path in filter(included, glob.glob(args.directory + "/**/package.json", recursive=True)):
     with open(path) as package_file:
+        if args.verbose:
+            debug("Parsing JSON from file {} ...".format(path))
         package = json.load(package_file)
         package_name = package["name"] if "name" in package else "<<unnamed>>"
         print("'{}':".format(package_name))

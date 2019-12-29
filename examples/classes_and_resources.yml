@@ -1,0 +1,22 @@
+# This is a hand written dependencies file (yaml format)
+
+"ConfigurationFile":
+
+"database":
+
+"UserProfile":
+  - "database"
+
+"MultiChainSigner":
+  - "ConfigurationFile"
+  - "network"
+  - "UserProfile"
+
+"AccountManager":
+  - "MultiChainSigner"
+  - "UserProfile"
+
+"Persona":
+  - "AccountManager"
+  - "MultiChainSigner"
+  - "ConfigurationFile"

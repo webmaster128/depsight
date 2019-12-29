@@ -1,5 +1,13 @@
+# maxOS stuff
+.DS_Store
+
 # Python
 __pycache__/
 
 # IDEs
 .vscode/
+
+# Example repos used in the README
+babel/
+iov-core/
+lerna/

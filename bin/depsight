@@ -7,9 +7,10 @@ import sys
 import subprocess
 from collections import OrderedDict
 import os
-
+import re
 import yaml
 
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from lib import depends
 
 
@@ -17,7 +18,10 @@ parser = argparse.ArgumentParser(description='')
 
 parser.add_argument('file',
                     nargs='?',
-                    help='The dependencies input file')
+                    help='The dependencies input file. Reads from STDIN when not file is set.')
+parser.add_argument('--output',
+                    nargs='?',
+                    help='The output file. Outputs to temporary directory if unset.')
 parser.add_argument('--mode',
                     nargs='?',
                     choices=["list", "draw"],
@@ -25,7 +29,7 @@ parser.add_argument('--mode',
                     help='The output mode')
 parser.add_argument('--format',
                     nargs='?',
-                    choices=["pdf", "png"],
+                    choices=["pdf", "png", "svg"],
                     default="pdf",
                     help='The file format (drawing mode only)')
 parser.add_argument('--engine',
@@ -39,6 +43,10 @@ parser.add_argument('--all', dest='all', action='store_const',
 parser.add_argument('--verbose', dest='verbose', action='store_const',
                     const=True, default=False,
                     help='Verbose output (default: false)')
+parser.add_argument('--exclude', dest='exclude_patterns',
+                    action='append',
+                    metavar='PATTERN',
+                    help='Explude patterns')
 args = parser.parse_args()
 
 def dicts(t): return {k: dicts(t[k]) for k in t}
@@ -54,19 +62,33 @@ registered_dependencies = dict()
 all_dependencies = dict()
 direct_dependencies = dict()
 
+def debug(thing):
+    print(thing, file=sys.stderr)
+
+exclude_patterns = args.exclude_patterns or []
+if args.verbose:
+    debug("Compiling exclude patterns ...")
+    debug(exclude_patterns)
+excludes = [re.compile(pattern) for pattern in exclude_patterns]
+
+def included(module):
+    for exclude in excludes:
+        if exclude.search(module):
+            return False
+    return True
+
 if args.verbose:
     print("Getting dependencies from files ...")
-
 infile = open(args.file, 'r') if args.file else sys.stdin
 
 with infile as stream:
     try:
         doc = yaml.load(stream)
 
-        for module in doc:
+        for module in filter(included, doc):
             name = module
             if doc[module]:
-                dependencies = set(doc[module])
+                dependencies = set(filter(included, doc[module]))
             else:
                 dependencies = set()
 
@@ -162,12 +184,12 @@ if args.mode == "list":
             print(key.ljust(longest_name) + " : " + ", ".join(sorted(direct_dependencies[key])))
 
 if args.mode == "draw":
-    import graphviz as gv
+    import graphviz
     import tempfile
 
-    tmpdir = tempfile.mkdtemp(prefix="botan-")
+    tmpdir = tempfile.mkdtemp(prefix="depsight-")
 
-    g2 = gv.Digraph(format=args.format, engine=args.engine)
+    g2 = graphviz.Digraph(format=args.format, engine=args.engine)
     g2.attr('graph', rankdir='RL') # draw left to right
     for key in direct_dependencies:
         g2.node(key)
@@ -176,9 +198,17 @@ if args.mode == "draw":
 
     if args.verbose:
         print("Rendering graph ...")
-    filename = g2.render(filename='graph', directory=tmpdir)
+    filename = g2.render(
+        directory=tmpdir, # working directory for graphviz
+        filename='graph', # temporary file with graph information
+    )
 
-    if args.verbose:
-        print("Opening " + filename + " ...")
-    openfile(filename)
+    if args.output:
+        if args.verbose:
+            print("Moving {} to {} ...".format(filename, args.output))
+        os.rename(filename, args.output)
+    else:
+        if args.verbose:
+            print("Opening " + filename + " ...")
+        openfile(filename)
 
