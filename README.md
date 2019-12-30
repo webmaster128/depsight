@@ -10,6 +10,7 @@ dependency trees.
 - [Advanced usage](#advanced-usage)
   - [Whitelisting](#whitelisting)
   - [Blacklisting](#blacklisting)
+  - [High resolution output](#high-resolution-output)
 
 ## Getting started
 
@@ -146,3 +147,24 @@ from_npm iov-core | depsight --exclude "^@types/"
 ```
 
 [![](examples/images/iov-core_notypes.png)](examples/images/iov-core_notypes.pdf)
+
+### High resolution output
+
+If the default PNG rendering output is not sharp enough four your use case, you
+can use the SVG format instead and export it to PNG using an external tool like
+Inkscape:
+
+```sh
+git clone https://github.com/iov-one/iov-core
+
+# Direct
+from_npm iov-core | depsight --include "^@iov/" --format png --output examples/images/iov-core_filtered.png
+
+# Via Inkscape
+from_npm iov-core | depsight --include "^@iov/" --format svg --output - | inkscape --without-gui --export-width 3000 --export-png $PWD/examples/images/iov-core_filtered_highres.png /dev/stdin
+```
+
+which results in
+
+- [Direct output (999×320px)](examples/images/iov-core_filtered.png)
+- [Rendered via Inkscape (3000×901px)](examples/images/iov-core_filtered_highres.png)

@@ -7,6 +7,7 @@ from collections import OrderedDict
 import yaml
 import os
 import re
+import shutil
 import subprocess
 import sys
 
@@ -22,7 +23,7 @@ parser.add_argument('file',
                     help='The dependencies input file. Reads from STDIN when not file is set.')
 parser.add_argument('--output',
                     nargs='?',
-                    help='The output file. Outputs to temporary directory if unset.')
+                    help='The output file path. Use "-" to write to STDOUT. If unset, the output is written to a temporary directory and opened.')
 parser.add_argument('--mode',
                     nargs='?',
                     choices=["list", "draw"],
@@ -222,7 +223,12 @@ if args.mode == "draw":
         filename='graph', # temporary file with graph information
     )
 
-    if args.output:
+    if args.output == "-":
+        if args.verbose:
+            log("Copying temporary file {} to STDOUT ...".format(filename))
+        with open(filename, "r") as f:
+            shutil.copyfileobj(f, sys.stdout)
+    elif args.output:
         if args.verbose:
             log("Moving {} to {} ...".format(filename, args.output))
         os.rename(filename, args.output)
