@@ -3,15 +3,16 @@
 # global
 import argparse
 import copy
-import sys
-import subprocess
 from collections import OrderedDict
+import yaml
 import os
 import re
-import yaml
+import subprocess
+import sys
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from lib import depends
+from lib.logging import log
 
 
 parser = argparse.ArgumentParser(description='')
@@ -66,19 +67,16 @@ registered_dependencies = dict()
 all_dependencies = dict()
 direct_dependencies = dict()
 
-def debug(thing):
-    print(thing, file=sys.stderr)
-
 include_patterns = args.include_patterns or []
 if args.verbose:
-    debug("Compiling include patterns ...")
-    debug(include_patterns)
+    log("Compiling include patterns ...")
+    log(include_patterns)
 includes = [re.compile(pattern) for pattern in include_patterns]
 
 exclude_patterns = args.exclude_patterns or []
 if args.verbose:
-    debug("Compiling exclude patterns ...")
-    debug(exclude_patterns)
+    log("Compiling exclude patterns ...")
+    log(exclude_patterns)
 excludes = [re.compile(pattern) for pattern in exclude_patterns]
 
 def included(module):
@@ -99,7 +97,7 @@ def included(module):
     return True
 
 if args.verbose:
-    print("Getting dependencies from files ...")
+    log("Getting dependencies from files ...")
 infile = open(args.file, 'r') if args.file else sys.stdin
 
 with infile as stream:
@@ -114,17 +112,17 @@ with infile as stream:
                 dependencies = set()
 
             if args.verbose:
-                print(name, "depends on", dependencies)
+                log("{} depends on {}".format(name, dependencies))
 
             if not name in registered_dependencies:
                 registered_dependencies[name] = set()
             registered_dependencies[name].update(dependencies)
 
     except yaml.YAMLError as exc:
-        print(exc)
+        log(exc)
 
 if args.verbose:
-    print("resolving dependencies ...")
+    log("resolving dependencies ...")
 
 def cartinality(depdict):
     return sum([len(depdict[k]) for k in depdict])
@@ -192,7 +190,7 @@ def openfile(filepath):
         os.startfile(filepath)
 
 if args.verbose:
-    print("Done resolving dependencies.")
+    log("Done resolving dependencies.")
 
 if args.mode == "list":
     if args.all:
@@ -218,7 +216,7 @@ if args.mode == "draw":
             g2.edge(key, dep)
 
     if args.verbose:
-        print("Rendering graph ...")
+        log("Rendering graph ...")
     filename = g2.render(
         directory=tmpdir, # working directory for graphviz
         filename='graph', # temporary file with graph information
@@ -226,10 +224,9 @@ if args.mode == "draw":
 
     if args.output:
         if args.verbose:
-            print("Moving {} to {} ...".format(filename, args.output))
+            log("Moving {} to {} ...".format(filename, args.output))
         os.rename(filename, args.output)
     else:
         if args.verbose:
-            print("Opening " + filename + " ...")
+            log("Opening {} ...".format(filename))
         openfile(filename)
-

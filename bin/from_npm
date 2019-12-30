@@ -3,8 +3,13 @@
 import argparse
 import json
 import glob
-import sys
+import os
 import re
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from lib.logging import log
+
 
 parser = argparse.ArgumentParser(description='')
 
@@ -25,13 +30,10 @@ parser.add_argument('--verbose', dest='verbose', action='store_const',
                     help='Verbose output (default: false)')
 args = parser.parse_args()
 
-def debug(thing):
-    print(thing, file=sys.stderr)
-
 exclude_patterns = args.exclude_patterns or []
 if args.verbose:
-    debug("Compiling exclude patterns ...")
-    debug(exclude_patterns)
+    log("Compiling exclude patterns ...")
+    log(exclude_patterns)
 excludes = [re.compile(pattern) for pattern in exclude_patterns]
 
 def included(path):
@@ -47,7 +49,7 @@ def included(path):
 for path in filter(included, glob.glob(args.directory + "/**/package.json", recursive=True)):
     with open(path) as package_file:
         if args.verbose:
-            debug("Parsing JSON from file {} ...".format(path))
+            log("Parsing JSON from file {} ...".format(path))
         package = json.load(package_file)
         package_name = package["name"] if "name" in package else "<<unnamed>>"
         print("'{}':".format(package_name))
