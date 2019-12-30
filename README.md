@@ -8,6 +8,7 @@ dependency trees.
 - [from_npm](#from_npm)
 - [Advanced usage](#advanced-usage)
   - [Whitelisting](#whitelisting)
+  - [Blacklisting](#blacklisting)
 
 ## Getting started
 
@@ -56,14 +57,6 @@ An example usage is
 git clone https://github.com/iov-one/iov-core
 from_npm iov-core | depsight
 ```
-
-We exclude all types packages for now to get a little bit more overview:
-
-```sh
-from_npm iov-core | depsight --exclude "^@types/"
-```
-
-[![](examples/images/iov-core.png)](examples/images/iov-core.pdf)
 
 ### Big examples
 
@@ -115,3 +108,19 @@ from_npm lerna --exclude "__fixtures__" | depsight --include "^@lerna/"
 which results in the following graph (click to open as PDF):
 
 [![](examples/images/lerna_monorepo_filtered.png)](examples/images/lerna_monorepo_filtered.pdf)
+
+### Blacklisting
+
+There are cases where you want to see all dependencies in general but hide some
+that are irrelevant for your current observation. This can be done by exclude
+patterns.
+
+In this example we exclude all DefinitelyTyped packages, which are prefixed with
+`@types/`:
+
+```sh
+git clone https://github.com/iov-one/iov-core
+from_npm iov-core | depsight --exclude "^@types/"
+```
+
+[![](examples/images/iov-core_notypes.png)](examples/images/iov-core_notypes.pdf)
