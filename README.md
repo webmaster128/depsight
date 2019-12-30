@@ -3,6 +3,12 @@
 Dependency Insight (short Depsight) generates graphical representations of your
 dependency trees.
 
+- [Getting started](#getting-started)
+- [Simple examples](#simple-examples)
+- [from_npm](#from_npm)
+- [Advanced usage](#advanced-usage)
+  - [Whitelisting](#whitelisting)
+
 ## Getting started
 
 Depsight contains a bunch of Python 3 scripts and uses
@@ -27,7 +33,7 @@ depsight --engine fdp examples/classes_and_resources.yml
 depsight --help
 ```
 
-## Examples
+## Simple examples
 
 - Simple example `depsight examples/classes_and_resources.yml`<br>
   ![](examples/images/classes_and_resources.png)
@@ -89,3 +95,23 @@ from_npm lerna --exclude "__fixtures__" | depsight
 which results in the following graph (click to open as PDF):
 
 [![](examples/images/lerna_monorepo_preview.jpg)](examples/images/lerna_monorepo.pdf)
+
+## Advanced usage
+
+### Whitelisting
+
+For big dependency graphs it can be handy to only look at a subset of elements.
+The lerna example from above is so big that it is hard to reason about. With the
+`--include` argument, we can filter elements by those in the @lerna namespace,
+which improve the overview a lot.
+
+Run
+
+```sh
+git clone https://github.com/lerna/lerna
+from_npm lerna --exclude "__fixtures__" | depsight --include "^@lerna/"
+```
+
+which results in the following graph (click to open as PDF):
+
+[![](examples/images/lerna_monorepo_filtered.png)](examples/images/lerna_monorepo_filtered.pdf)

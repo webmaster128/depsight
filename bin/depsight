@@ -43,10 +43,14 @@ parser.add_argument('--all', dest='all', action='store_const',
 parser.add_argument('--verbose', dest='verbose', action='store_const',
                     const=True, default=False,
                     help='Verbose output (default: false)')
+parser.add_argument('--include', dest='include_patterns',
+                    action='append',
+                    metavar='PATTERN',
+                    help='Whitelist elements by name pattern. Start and end pattern with ^ and $ to get a full match. Can be used multiple times.')
 parser.add_argument('--exclude', dest='exclude_patterns',
                     action='append',
                     metavar='PATTERN',
-                    help='Explude patterns')
+                    help='Blacklist elements by name pattern. Start and end pattern with ^ and $ to get a full match. Can be used multiple times.')
 args = parser.parse_args()
 
 def dicts(t): return {k: dicts(t[k]) for k in t}
@@ -65,6 +69,12 @@ direct_dependencies = dict()
 def debug(thing):
     print(thing, file=sys.stderr)
 
+include_patterns = args.include_patterns or []
+if args.verbose:
+    debug("Compiling include patterns ...")
+    debug(include_patterns)
+includes = [re.compile(pattern) for pattern in include_patterns]
+
 exclude_patterns = args.exclude_patterns or []
 if args.verbose:
     debug("Compiling exclude patterns ...")
@@ -72,6 +82,17 @@ if args.verbose:
 excludes = [re.compile(pattern) for pattern in exclude_patterns]
 
 def included(module):
+    if includes:
+        is_included = False
+        for include in includes:
+            if include.search(module):
+                is_included = True
+    else:
+        is_included = True
+
+    if not is_included:
+        return False
+
     for exclude in excludes:
         if exclude.search(module):
             return False
