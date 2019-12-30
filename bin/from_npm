@@ -13,6 +13,9 @@ parser.add_argument('directory',
 parser.add_argument('--include-node-modules', action='store_const',
                     const=True, default=False,
                     help='Include the dependencies in the installed /node_modules/ fodlders')
+parser.add_argument('--include-dev-dependencies', action='store_const',
+                    const=True, default=False,
+                    help='Includes devDependencies')
 parser.add_argument('--exclude', dest='exclude_patterns',
                     action='append',
                     metavar='PATTERN',
@@ -50,5 +53,8 @@ for path in filter(included, glob.glob(args.directory + "/**/package.json", recu
         print("'{}':".format(package_name))
         if "dependencies" in package:
             for key in package["dependencies"]:
+                print(" - '{}'".format(key))
+        if "devDependencies" in package and args.include_dev_dependencies:
+            for key in package["devDependencies"]:
                 print(" - '{}'".format(key))
         print("")

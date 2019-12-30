@@ -6,6 +6,7 @@ dependency trees.
 - [Getting started](#getting-started)
 - [Simple examples](#simple-examples)
 - [from_npm](#from_npm)
+  - [devDependencies](#devdependencies)
 - [Advanced usage](#advanced-usage)
   - [Whitelisting](#whitelisting)
   - [Blacklisting](#blacklisting)
@@ -92,6 +93,23 @@ from_npm lerna --exclude "__fixtures__" | depsight
 which results in the following graph (click to open as PDF):
 
 [![](examples/images/lerna_monorepo_preview.jpg)](examples/images/lerna_monorepo.pdf)
+
+### devDependencies
+
+By default, `from_npm` only looks into
+[runtime dependencies](https://docs.npmjs.com/files/package.json#dependencies).
+But we can add
+[development dependencies](https://docs.npmjs.com/files/package.json#devdependencies)
+as well:
+
+```sh
+git clone https://github.com/webmaster128/private-voting
+from_npm private-voting --include-dev-dependencies | depsight
+```
+
+gives you
+
+![](examples/images/private-voting_devdependencies.png)
 
 ## Advanced usage
 
