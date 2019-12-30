@@ -54,9 +54,13 @@ directly into `depsight`
 An example usage is
 
 ```sh
-git clone https://github.com/iov-one/iov-core
-from_npm iov-core | depsight
+git clone https://github.com/webmaster128/private-voting
+from_npm private-voting | depsight
 ```
+
+gives you
+
+![](examples/images/private-voting.png)
 
 ### Big examples
 

@@ -11,3 +11,4 @@ __pycache__/
 babel/
 iov-core/
 lerna/
+private-voting/
