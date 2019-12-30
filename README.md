@@ -1,12 +1,13 @@
 # Depsight
 
-Dependency Insight (short Depsight) generates graphical representations of your dependency trees.
+Dependency Insight (short Depsight) generates graphical representations of your
+dependency trees.
 
 ## Getting started
 
-Depsight contains a bunch of Python 3 scripts and uses [the graphviz binary](https://www.graphviz.org/download/)
-and the graphviz Python module to draw graphs.
-Setup should look something like this:
+Depsight contains a bunch of Python 3 scripts and uses
+[the graphviz binary](https://www.graphviz.org/download/) and the graphviz
+Python module to draw graphs. Setup should look something like this:
 
 ```sh
 git clone https://github.com/webmaster128/depsight.git
@@ -28,11 +29,11 @@ depsight --help
 
 ## Examples
 
-* Simple example `depsight examples/classes_and_resources.yml`
+- Simple example `depsight examples/classes_and_resources.yml`
   ![](examples/images/classes_and_resources.png)
-* With FDP engine `depsight --engine fdp examples/classes_and_resources.yml`
+- With FDP engine `depsight --engine fdp examples/classes_and_resources.yml`
   ![](examples/images/classes_and_resources-fdp.png)
-* Circular dependencies `depsight examples/circular.yml`
+- Circular dependencies `depsight examples/circular.yml`
   ![](examples/images/circular.png)
 
 ## from_npm
@@ -60,8 +61,8 @@ from_npm iov-core | depsight --exclude "^@types/"
 
 ### Big examples
 
-Both lerna and babel are big monorepos with many packages and dependencies.
-We inspect both of them.
+Both lerna and babel are big monorepos with many packages and dependencies. We
+inspect both of them.
 
 #### Babel
 
