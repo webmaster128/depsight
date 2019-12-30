@@ -28,13 +28,12 @@ depsight --help
 
 ## Examples
 
-`depsight --format png examples/classes_and_resources.yml`:
-
-![](examples/images/classes_and_resources.png)
-
-`depsight --format png --engine fdp examples/classes_and_resources.yml`:
-
-![](examples/images/classes_and_resources-fdp.png)
+* Simple example `depsight examples/classes_and_resources.yml`
+  ![](examples/images/classes_and_resources.png)
+* With FDP engine `depsight --engine fdp examples/classes_and_resources.yml`
+  ![](examples/images/classes_and_resources-fdp.png)
+* Circular dependencies `depsight examples/circular.yml`
+  ![](examples/images/circular.png)
 
 ## from_npm
 
