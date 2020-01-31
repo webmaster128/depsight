@@ -210,7 +210,7 @@ if args.mode == "draw":
     tmpdir = tempfile.mkdtemp(prefix="depsight-")
 
     g2 = graphviz.Digraph(format=args.format, engine=args.engine)
-    g2.attr('graph', rankdir='RL') # draw left to right
+    g2.attr(rankdir='RL') # draw right to left
     for key in direct_dependencies:
         g2.node(key)
         for dep in direct_dependencies[key]:
