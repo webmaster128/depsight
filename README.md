@@ -160,8 +160,8 @@ git clone https://github.com/iov-one/iov-core
 # Direct
 from_npm iov-core | depsight --include "^@iov/" --format png --output examples/images/iov-core_filtered.png
 
-# Via Inkscape
-from_npm iov-core | depsight --include "^@iov/" --format svg --output - | inkscape --without-gui --export-width 3000 --export-png $PWD/examples/images/iov-core_filtered_highres.png /dev/stdin
+# Via Inkscape 1.0
+from_npm iov-core | depsight --include "^@iov/" --format svg --output - | inkscape --without-gui --pipe --export-width 3000 --export-file examples/images/iov-core_filtered_highres.png
 ```
 
 which results in
