@@ -9,3 +9,7 @@ insert_final_newline = true
 
 [*.{yml,md}]
 indent_size = 2
+
+# Shell files
+[depsight-md]
+indent_size = 2
