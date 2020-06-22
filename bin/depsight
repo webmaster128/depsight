@@ -31,7 +31,7 @@ parser.add_argument('--mode',
                     help='The output mode')
 parser.add_argument('--format',
                     nargs='?',
-                    choices=["pdf", "png", "svg"],
+                    choices=["pdf", "png", "svg", "source"],
                     default="pdf",
                     help='The file format (drawing mode only)')
 parser.add_argument('--engine',
@@ -209,7 +209,9 @@ if args.mode == "draw":
 
     tmpdir = tempfile.mkdtemp(prefix="depsight-")
 
-    g2 = graphviz.Digraph(format=args.format, engine=args.engine)
+    rendering_format = args.format if args.format != "source" else None
+
+    g2 = graphviz.Digraph(format=rendering_format, engine=args.engine)
     g2.attr(dpi='300') # Use 300dpi to make PNG outputs sharper
     g2.attr(rankdir='RL') # draw right to left
     for key in direct_dependencies:
@@ -217,12 +219,17 @@ if args.mode == "draw":
         for dep in direct_dependencies[key]:
             g2.edge(key, dep)
 
-    if args.verbose:
-        log("Rendering graph ...")
-    filename = g2.render(
-        directory=tmpdir, # working directory for graphviz
-        filename='graph', # temporary file with graph information
-    )
+    if rendering_format:
+        if args.verbose:
+            log("Rendering graph ...")
+        filename = g2.render(
+            directory=tmpdir, # working directory for graphviz
+            filename='graph', # temporary file with graph information
+        )
+    else:
+        filename = os.path.join(tmpdir, "graph.txt")
+        with open(filename, "w") as f:
+            f.write(g2.source)
 
     if args.output == "-":
         if args.verbose:
