@@ -1,0 +1,26 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+command -v shellcheck > /dev/null && shellcheck "$0"
+
+TMP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/depsight.XXXXXXXXX")
+
+SOURCE=$(< "${1:-/dev/stdin}")
+
+function urlencode() {
+  python -c 'import urllib, sys; print(urllib.quote(sys.stdin.read()))'
+}
+
+(
+  cd "$TMP_DIR"
+
+  GRAPH=$(echo "$SOURCE" | depsight --format source --output - | urlencode)
+  LINK="https://dagrejs.github.io/project/dagre-d3/latest/demo/interactive-demo.html?graph=$GRAPH"
+  ALT="Brought to you by depsight"
+  MD="[![$ALT](graph.png)]($LINK)"
+  echo "Your graph markdown:"
+  echo ""
+  echo "$MD"
+
+  echo "$SOURCE" | depsight --format png --output graph.png
+  open .
+)
