@@ -34,6 +34,10 @@ parser.add_argument('--format',
                     choices=["pdf", "png", "svg", "source"],
                     default="pdf",
                     help='The file format (drawing mode only)')
+parser.add_argument('--dpi',
+                    nargs='?',
+                    default=200,
+                    help='Resolution when rendering graphs (drawing mode only)')
 parser.add_argument('--engine',
                     nargs='?',
                     choices=["fdp", "dot"],
@@ -212,7 +216,7 @@ if args.mode == "draw":
     rendering_format = args.format if args.format != "source" else None
 
     g2 = graphviz.Digraph(format=rendering_format, engine=args.engine)
-    g2.attr(dpi='300') # Use 300dpi to make PNG outputs sharper
+    g2.attr(dpi=args.dpi) # Use dpi setting to make PNG outputs sharper. --dpi 150 and above lead to good results
     g2.attr(rankdir='RL') # draw right to left
     for key in direct_dependencies:
         g2.node(key)
