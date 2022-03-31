@@ -107,7 +107,7 @@ infile = open(args.file, 'r') if args.file else sys.stdin
 
 with infile as stream:
     try:
-        doc = yaml.load(stream)
+        doc = yaml.safe_load(stream)
 
         for module in filter(included, doc):
             name = module
