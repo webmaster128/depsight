@@ -1,0 +1,23 @@
+# This is a hand written dependencies file for depsight
+"Wallet":
+- "@cosmwasm/bcp"
+- "@iov/keycontrol"
+
+"@cosmwasm/cli":
+- "@cosmwasm/sdk"
+- "@iov/keycontrol"
+
+"@cosmwasm/faucet":
+- "@cosmwasm/bcp"
+- "@iov/keycontrol"
+
+"@cosmwasm/bcp":
+- "@cosmwasm/sdk"
+- "@iov/bcp"
+- "@iov/stream"
+
+"@cosmwasm/sdk":
+- "@iov/tendermint-rpc"
+- "@iov/encoding"
+- "@iov/crypto"
+- "amino-js"
