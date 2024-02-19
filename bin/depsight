@@ -216,7 +216,7 @@ if args.mode == "draw":
     rendering_format = args.format if args.format != "source" else None
 
     g2 = graphviz.Digraph(format=rendering_format, engine=args.engine)
-    g2.attr(dpi=args.dpi) # Use dpi setting to make PNG outputs sharper. --dpi 150 and above lead to good results
+    g2.attr(dpi=str(args.dpi)) # Use dpi setting to make PNG outputs sharper. --dpi 150 and above lead to good results
     g2.attr(rankdir='RL') # draw right to left
     for key in direct_dependencies:
         g2.node(key)
