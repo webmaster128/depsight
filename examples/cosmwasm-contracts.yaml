@@ -1,0 +1,30 @@
+serde-json-wasm:
+
+cosmwasm:
+  - serde-json-wasm
+
+# https://github.com/CosmWasm/cw-storage-plus/blob/v2.0.0-beta.0/Cargo.toml
+cw-storage-plus:
+  - cosmwasm
+
+# https://github.com/CosmWasm/cw-minus/blob/2_0_0_prerelease/Cargo.toml
+cw-minus:
+  - cw-storage-plus
+
+# https://github.com/CosmWasm/cw-multi-test/blob/v0.19.0/Cargo.toml
+cw-multi-test:
+  - cw-storage-plus
+  - cw-minus
+  - cosmwasm
+
+cw-plus:
+  - cw-minus
+  - cosmwasm
+  - cw-multi-test
+
+sylvia:
+  - cw-minus
+  - cw-storage-plus
+  - cosmwasm
+  - cw-multi-test
+  - serde-json-wasm
