@@ -1,5 +1,7 @@
 serde-json-wasm:
 
+serde-cw-value:
+
 cosmwasm:
   - serde-json-wasm
 
@@ -14,8 +16,15 @@ cw-minus:
 # https://github.com/CosmWasm/cw-multi-test/blob/v0.19.0/Cargo.toml
 cw-multi-test:
   - cw-storage-plus
-  - cw-minus
+  - cw-minus # uses cw-utils
   - cosmwasm
+
+# https://github.com/CosmWasm/cw-template/blob/main/Cargo.toml
+cw-template:
+  - cosmwasm
+  - cw-storage-plus
+  - cw-minus # uses cw2
+  - cw-multi-test
 
 cw-plus:
   - cw-minus
@@ -23,8 +32,20 @@ cw-plus:
   - cw-multi-test
 
 sylvia:
-  - cw-minus
+  - cw-minus # uses cw-utils
   - cw-storage-plus
   - cosmwasm
   - cw-multi-test
   - serde-json-wasm
+  - serde-cw-value
+
+sylvia-template:
+  - cosmwasm
+  - sylvia
+  - cw-storage-plus
+
+wasmvm:
+  - cosmwasm
+
+wasmd:
+  - wasmvm
